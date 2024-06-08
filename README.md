@@ -34,8 +34,8 @@ To include this API into your project add the files to your projects directory
 and to the top of your main script file add these lines:
 
 ```lua
-const Canvas = require("canvas.lua")
-const Canvas, Color = Canvas.Canvas, Canvas.Color
+local Canvas = require("canvas.lua")
+local Canvas, Color = Canvas.Canvas, Canvas.Color
 ```
 
 ## Colors
