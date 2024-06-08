@@ -24,7 +24,7 @@ PPM is a really simple format and is fast to encode
 it's basically a header with the pixels in a specific order
 
 PNG is slower to encode so you don't want to do it every how many frames
-PPM is a better option for that but it PNG might be great for static or once in a while update images
+PPM is a better option for that but PNG might be great for static or once in a while update images
 
 One downside of PPM is there's no alpha channel
 
