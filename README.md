@@ -198,13 +198,13 @@ Canvas:plotPixel(x: number, y: number, color: Color)
 
 ### Drawing a Line
 
-```
+```lua
 Canvas:drawLine(x1: number, y1: number, x2: number, y2: number, color: Color)
 ```
 
 ### Drawing a Rectangle
 
-```
+```lua
 Canvas:drawRect(x: number, y: number, width: number, height: number, color: Color)
 ```
 
@@ -213,7 +213,7 @@ Canvas:drawRect(x: number, y: number, width: number, height: number, color: Colo
 There are two circle functions one to draw filled and one to draw just the outline
 x and y is the center of the circle
 
-```
+```lua
 Canvas:drawCircleFilled(x: number, y: number, tadius: number, color: Color)
 Canvas:drawCircle(x: number, y: number, tadius: number, color: Color)
 ```
