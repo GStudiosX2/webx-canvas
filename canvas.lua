@@ -171,6 +171,18 @@ function Canvas:idx(x: number, y: number)
   return idx
 end
 
+function Canvas:pixel(idx: number)
+  local pixels = self._pixels
+  local r = pixels[idx]
+  local g = pixels[idx + 1]
+  local b = pixels[idx + 2]
+  if self._depth == 4 then
+    local a = pixels[idx + 3]
+    return {r,g,b,a}
+  end
+  return {r,g,b}
+end
+
 function Canvas:plotPixel(x: number, y: number, color: {number})
   if x < 1 or y < 1 or x > self._width or y > self._height then return end
   local idx = self:idx(x, y)
