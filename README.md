@@ -10,10 +10,12 @@ my pr/repo as of currently writing this.
 
 [pull request](https://github.com/face-hh/webx/pull/170)
 
-# formats
+# Formats
 
-There are two supported formats:
+There are currently two supported formats:
+
 ppm
+
 png
 
 PPM is a really simple format and is fast to encode 
