@@ -9,7 +9,12 @@ local cos = math.cos
 local rad = math.rad
 local abs = math.abs
 local floor = math.floor
+local schar = string.char
+local sformat = string.format
 local random = math.random
+
+local PPM_MIME = "image/x-portable-anymap"
+local PNG_MIME = "image/png"
 
 local function rgb(rgb: {number})
   local r,g,b,a = rgb[1], rgb[2], rgb[3], rgb[4]
@@ -272,17 +277,40 @@ function Canvas:clearRect(x: number, y: number, width: number, height: number)
   self:drawRect(x, y, width, height, self._background)
 end
 
-function Canvas:render(image)
-  if image ~= nil and image.set_source ~= nil then
-    local png = PNG(self._width, self._height, self._depth == 3 and "rgb" or "rgba")
-    png:write(self._pixels)
-    if not png.done then
-      error("png not ready")
-      return
+function Canvas:to_ppm()
+    local buffer = {}
+    local width, height = self:width(), self:height()
+    local pixels = self._pixels
+    table.insert(buffer, sformat("P6\n%d %d\n255\n", width, height))
+    for y = 1, height do
+        for x = 1, width do
+            local idx = self:idx(x, y)
+            table.insert(buffer, schar(floor(pixels[idx])))
+            table.insert(buffer, schar(floor(pixels[idx + 1])))
+            table.insert(buffer, schar(floor(pixels[idx + 2])))
+        end
     end
-    image.set_source("data:image/png;base64," ..
-      buffer.tostring(Base64.encode(buffer.fromstring(
-      table.concat(png.output)))))
+    return table.concat(buffer)
+end
+
+function Canvas:render(image, format: string?)
+  format = format or "png"
+  if image ~= nil and image.set_source ~= nil then
+    if format == "png" then
+      local png = PNG(self._width, self._height, self._depth == 3 and "rgb" or "rgba")
+      png:write(self._pixels)
+      if not png.done then
+        error("png not ready")
+        return
+      end
+      image.set_source("data:" .. PNG_MIME .. ";base64," ..
+        buffer.tostring(Base64.encode(
+        buffer.fromstring(table.concat(png.output)))))
+    elseif format == "ppm" then
+      image.set_source("data:" .. PPM_MIME .. ";base64," ..
+        buffer.tostring(Base64.encode(
+        buffer.fromstring(self:to_ppm()))))
+    end
   end
 end
 
