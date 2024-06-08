@@ -3,7 +3,7 @@
 webx canvas is a way to draw anything you like on a image
 using base64 encoding and data urls in webx v1.3.0
 
-This project uses relative urls in require and unfortunaly requires
+This project uses relative urls in require and unfortunately requires
 my pr/repo as of currently writing this.
 
 [repo](https://github.com/GStudiosX2/webx)
