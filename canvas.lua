@@ -50,7 +50,7 @@ function Color.random()
 end
 
 function Color:clone()
-  local r, g, b = self[1], self[2], self[3], self[4]
+  local r, g, b, a = self[1], self[2], self[3], self[4]
   return Color.new(r, g, b, a)
 end
 
