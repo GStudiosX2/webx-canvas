@@ -2,11 +2,20 @@
 <head>
   <title>Cube</title>
   <script src="script.lua" />
+  <link href="styles.css" />
 </head>
 <body>
-  <p>Cool 3D Rotating Cube</p>
-  <p>Only works on my fork for now</p>
-  <p class="text"></p>
-  <img class="image" src="https://raw.githubusercontent.com/GStudiosX2/test2/main/not_loaded.png" />
+  <div class="container">
+    <p class="title">Cool 3D Rotating Cube</p>
+    <p>Only works on my fork for now</p>
+    <p class="text"></p>
+    <div class="image_container">
+      <img class="image" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAAY0lEQVR42u3QAREAAAQEsJdcdHI4W4RVJp3HSoAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECLhvAQCsX8FEzRMyAAAAAElFTkSuQmCC" />
+    </div>
+    <div class="numberinput">
+      <p>Enter a rotations per frame:</p>
+      <input class="rotation_input" placeholder="1-90" value="4" />
+    </div>
+  </div>
 </body>
 </html>

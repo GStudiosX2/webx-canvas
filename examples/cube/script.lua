@@ -51,6 +51,17 @@ local faces = {
 
 local angle = 0
 local last_time = os.time()
+local rotations_per_frame = get("rotation_input")
+local rpf = tonumber(rotations_per_frame.get_content())
+
+rotations_per_frame.on_submit(function()
+  local n = tonumber(rotations_per_frame.get_content())
+  if n == nil then n = 4 end
+  if n < 1 then n = 1 end
+  if n > 90 then n = 90 end
+  rpf = n
+end)
+
 function draw(delta)
   canvas:clearRect(0, 0, canvas:width(), canvas:height())
   local points = {}
@@ -79,7 +90,7 @@ function draw(delta)
       points[face[4]].y,
       Color.Indigo)
   end
-  angle += 4
+  angle += rpf
 end
 
 local count = 0
