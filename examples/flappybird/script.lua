@@ -1,4 +1,5 @@
 local set_interval = require("../../interval.lua")
+local Fonts = require("../../fonts.lua")
 local Canvas = require("../../canvas.lua")
 local Canvas, Color = Canvas.Canvas, Canvas.Color
 local Point2D = require("../../point2D.lua")
@@ -53,9 +54,6 @@ set_interval(function()
   if stopped then
     restartbtn.set_visible(true)
   else
-    if score > highscore then
-      highscore = score
-    end
     restartbtn.set_visible(false)
   end
 
@@ -110,8 +108,19 @@ set_interval(function()
     end
   end
 
+  if not stopped then
+    canvas:drawString(Fonts.DEFAULT, tostring(score), 100, 20, Color.White, 3)
+  else
+    canvas:drawString(Fonts.DEFAULT, "HIGH:", 100, 150, Color.White, 2)
+    canvas:drawString(Fonts.DEFAULT, tostring(highscore), 100, 185, Color.White, 2)
+  end
+
   canvas:render(image, "ppm")
   last_time = current_time
+
+  if score > highscore then
+    highscore = score
+  end
 
   paralax -= 5
   if paralax < -200 then
@@ -150,5 +159,5 @@ set_interval(function()
     count = 0
   end
 
-  fps_counter.set_content("FPS: " .. fps .. ", Score: " .. score .. ", High: " .. highscore)
+  fps_counter.set_content("FPS: " .. fps)
 end, 16)

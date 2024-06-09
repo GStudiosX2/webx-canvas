@@ -89,6 +89,7 @@ function Color:alpha(alpha: number?)
 end
 
 -- some from https://www.w3schools.com/cssref/css_colors.php
+Color.Transparent = Color.new(0, 0, 0, 0)
 Color.Red = Color.new(255, 0, 0)
 Color.Green = Color.new(0, 255, 0)
 Color.DarkGreen = Color.hex("#006400")
@@ -183,7 +184,7 @@ function Canvas:pixel(idx: number)
   return {r,g,b}
 end
 
-function Canvas:plotPixel(x: number, y: number, color: {number})
+function Canvas:plotPixel_0(x: number, y: number, color: {number})
   if x < 1 or y < 1 or x > self._width or y > self._height then return end
   local idx = self:idx(x, y)
   if idx < 1 or idx > self._height * self._width * 3 then return end
@@ -192,6 +193,94 @@ function Canvas:plotPixel(x: number, y: number, color: {number})
   self._pixels[idx + 2] = color[3]
   if self._depth == 4 then
     self._pixels[idx + 3] = color[4]
+  end
+end
+
+function Canvas:plotPixel(x: number, y: number, color: {number})
+  self:plotPixel_0(x, y, color)
+end
+
+function Canvas:drawImage(dx: number, dy: number, dwidth: number, dheight: number, f: (Canvas) -> ())
+  local image = Canvas.new(dwidth, dheight, Color.Transparent)
+  f(image)
+  self:drawCanvas(image, dx, dy, dwidth, dheight)
+end
+
+function Canvas:drawCanvas(image: Canvas, dx: number?, dy: number?, dwidth: number?, dheight: number?)
+  dx = dx or 0
+  dy = dy or 0
+  dwidth = dwidth or image:width()
+  dheight = dheight or image:height()
+  for x=1,dwidth do
+    for y=1,dheight do
+      local pix = image:pixel(image:idx(x, y))
+      if pix ~= Color.Transparent then
+        self:plotPixel(dx + x,  dy + y, pix)
+      end
+    end
+  end
+end
+
+function Canvas:drawCharacter(
+  font: { 
+    width: number,
+    height: number,
+    [string]: {
+      spacing: number,
+      bitmap: { { number } }
+    }
+  },
+  c: string, 
+  x: number, y: number, 
+  color: {number},
+  scale: number
+)
+  local cData = font[c]
+  if not cData then return end
+
+  for row = 1, font.height do
+    for col = 1, font.width do
+      if cData.bitmap[row][col] == 1 then
+        self:drawRect(
+          x + (col - 1) * scale,
+          y + (row - 1) * scale,
+          scale, scale, color
+        )
+      end
+    end
+  end
+end
+
+function Canvas:drawString(
+  font: { 
+    width: number,
+    height: number,
+    [string]: { 
+      spacing: number,
+      bitmap: { { number } }
+    }
+  },
+  str: string,
+  x: number, y: number,
+  color: {number},
+  scale: number,
+  align: string?
+)
+  align = align or "center"
+
+  if align == "center" then
+    x -= ((#str * font.width / 2) * scale)
+  end
+
+  for i=1,#str do
+    local spacing = ((font[str:sub(i, i)] or { spacing = 7 }).spacing * scale)
+    x += spacing // 2
+    self:drawCharacter(
+      font, 
+      str:sub(i, i), 
+      x, y, 
+      color, scale)
+    x += spacing
   end
 end
 
@@ -270,6 +359,24 @@ function Canvas:drawRect(x: number, y: number, width: number, height: number, co
   end
 end
 
+function Canvas:drawFill(x: number, y: number, x2: number, y2: number, color: {number})
+  if x2 < x then
+    local tmp = x2
+    x2 = x
+    x = tmp
+  end
+  if y2 < y then
+    local tmp = y2
+    y2 = y
+    y = tmp
+  end
+  for x3=x,x2 do
+    for y3=y,y2 do
+      self:plotPixel(x3, y3, color)
+    end
+  end
+end
+
 function Canvas:drawCircle(x: number, y: number, radius: number, color: {number})
   for angle=0,360 do
     local x2 = floor(radius * sin(rad(angle)) + x + 0.5)
@@ -306,25 +413,36 @@ function Canvas:to_ppm()
     return table.concat(buffer)
 end
 
-function Canvas:render(image, format: string?)
+function Canvas:to_png()
+  local png = PNG(self._width, self._height, self._depth == 3 and "rgb" or "rgba")
+  png:write(self._pixels)
+  if not png.done then
+    error("png not ready")
+    return nil
+  end
+  return png
+end
+
+function Canvas:render_0(image, format: string?)
   format = format or "png"
   if image ~= nil and image.set_source ~= nil then
     if format == "png" then
-      local png = PNG(self._width, self._height, self._depth == 3 and "rgb" or "rgba")
-      png:write(self._pixels)
-      if not png.done then
-        error("png not ready")
-        return
+      local png = self:to_png()
+      if png ~= nil then
+        image.set_source("data:" .. PNG_MIME .. ";base64," ..
+          buffer.tostring(Base64.encode(
+          buffer.fromstring(table.concat(png.output)))))
       end
-      image.set_source("data:" .. PNG_MIME .. ";base64," ..
-        buffer.tostring(Base64.encode(
-        buffer.fromstring(table.concat(png.output)))))
     elseif format == "ppm" then
       image.set_source("data:" .. PPM_MIME .. ";base64," ..
         buffer.tostring(Base64.encode(
         buffer.fromstring(self:to_ppm()))))
     end
   end
+end
+
+function Canvas:render(image, format: string?)
+  self:render_0(image, format)
 end
 
 function Canvas:width() return self._width end

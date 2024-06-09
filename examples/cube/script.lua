@@ -39,6 +39,22 @@ local faces = {
   {1, 5, 6, 2},
   {4, 3, 7, 8}
 }
+local textureCoords = {
+    {{0, 0}, {1, 0}, {1, 1}, {0, 1}},
+    {{0, 0}, {1, 0}, {1, 1}, {0, 1}},
+    {{0, 0}, {1, 0}, {1, 1}, {0, 1}},
+    {{0, 0}, {1, 0}, {1, 1}, {0, 1}},
+    {{0, 0}, {1, 0}, {1, 1}, {0, 1}},
+    {{0, 0}, {1, 0}, {1, 1}, {0, 1}},
+}
+
+local texture = Canvas.new(16, 16)
+
+for x=1,texture:width() do
+  for y=1,texture:height() do
+    texture:plotPixel(x, y, Color.random())
+  end
+end
 
 local angle = 0
 local last_time = os.time()
@@ -61,7 +77,7 @@ function draw(delta)
       rotate_test(vertex, angle), 128, 7)
     table.insert(points, new)
   end
-  for i, face in ipairs(faces) do
+  for j, face in ipairs(faces) do
     canvas:drawLine(
       points[face[1]].x, 
       points[face[1]].y, 
@@ -79,6 +95,12 @@ function draw(delta)
       points[face[3]].y,
       points[face[4]].x,
       points[face[4]].y,
+      Color.Indigo)
+    canvas:drawLine(
+      points[face[1]].x, 
+      points[face[1]].y, 
+      points[face[3]].x, 
+      points[face[3]].y,
       Color.Indigo)
   end
   angle += rpf
