@@ -2,23 +2,43 @@ local sqrt = math.sqrt
 local Point2D = {}
 Point2D.__index = Point2D
 Point2D.__add = function(self, other)
-  self.x += other.x
-  self.y += other.y
+  if tonumber(other) == other then
+    self.x += other
+    self.y += other
+  else
+    self.x += other.x
+    self.y += other.y
+  end
   return self
 end
 Point2D.__sub = function(self, other)
-  self.x -= other.x
-  self.y -= other.y
+  if tonumber(other) == other then
+    self.x -= other
+    self.y -= other
+  else
+    self.x -= other.x
+    self.y -= other.y
+  end
   return self
 end
 Point2D.__mul = function(self, other)
-  self.x *= other.x
-  self.y *= other.y
+  if tonumber(other) == other then
+    self.x *= other
+    self.y *= other
+  else
+    self.x *= other.x
+    self.y *= other.y
+  end
   return self
 end
 Point2D.__div = function(self, other)
-  self.x /= other.x
-  self.y /= other.y
+  if tonumber(other) == other then
+    self.x /= other
+    self.y /= other
+  else
+    self.x /= other.x
+    self.y /= other.y
+  end
   return self
 end
 Point2D.__unm = function()

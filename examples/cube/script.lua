@@ -1,13 +1,4 @@
-function set_interval(f, interval: number)
-  local function i()
-    set_timeout(function()
-      f()
-      i()
-    end, interval)
-  end
-  i()
-end
-
+local set_interval = require("../../interval.lua")
 local Canvas = require("../../canvas.lua")
 local Point3D = require("../../point3D.lua")
 local Canvas, Color = Canvas.Canvas, Canvas.Color

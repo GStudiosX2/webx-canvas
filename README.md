@@ -271,3 +271,5 @@ TODO
 # Examples
 
 [Rotating 3D Cube](examples/cube)
+
+[Flappy Bird](examples/flappybird) (a bit laggy)

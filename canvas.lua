@@ -186,6 +186,7 @@ end
 function Canvas:plotPixel(x: number, y: number, color: {number})
   if x < 1 or y < 1 or x > self._width or y > self._height then return end
   local idx = self:idx(x, y)
+  if idx < 1 or idx > self._height * self._width * 3 then return end
   self._pixels[idx] = color[1]
   self._pixels[idx + 1] = color[2]
   self._pixels[idx + 2] = color[3]
