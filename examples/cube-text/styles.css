@@ -1,0 +1,30 @@
+numberinput {
+  gap: 15px;
+  direction: column;
+}
+
+rotation_input {
+  padding: 5px;
+  height: 30px;
+}
+
+container {
+  gap: 6px;
+  direction: column;
+  align-items: center;
+  margin-top: 67px;
+}
+
+title {
+  font-size: 23px;
+}
+
+image {
+  font-size: 10px;
+  font-family: 'Courier New', Courier, monospace;
+}
+
+image_container {
+  align-items: center;
+  padding: 2px;
+}

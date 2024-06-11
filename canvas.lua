@@ -11,6 +11,7 @@ local abs = math.abs
 local floor = math.floor
 local schar = string.char
 local sformat = string.format
+local srep = string.rep
 local random = math.random
 
 local PPM_MIME = "image/x-portable-anymap"
@@ -423,26 +424,65 @@ function Canvas:to_png()
   return png
 end
 
-function Canvas:render_0(image, format: string?)
-  format = format or "png"
-  if image ~= nil and image.set_source ~= nil then
-    if format == "png" then
-      local png = self:to_png()
-      if png ~= nil then
-        image.set_source("data:" .. PNG_MIME .. ";base64," ..
-          buffer.tostring(Base64.encode(
-          buffer.fromstring(table.concat(png.output)))))
+local ascii_chars = { ' ', '.', ':', '-', '=', '+', '*', '#', '%', '@' }
+local num_chars = #ascii_chars
+
+local function rgb_to_brightness(r, g, b)
+  return 0.299 * r + 0.587 * g + 0.114 * b
+end
+
+function Canvas:to_text(scale: number?)
+  scale = scale or 1
+  local width, height = self:width(), self:height()
+  local ascii_art = {}
+
+  for y = 1, height, floor(scale * 2.5) do
+    local line = {}
+    for x = 1, width, floor(scale) do
+      local idx = self:idx(x, y)
+      local r, g, b = self._pixels[idx], self._pixels[idx + 1], self._pixels[idx + 2]
+      if r and g and b then
+        local brightness = rgb_to_brightness(r, g, b)
+        local char_idx = floor(brightness / 255 * (num_chars - 1)) + 1
+        table.insert(line, ascii_chars[char_idx])
+      else
+        table.insert(line, ' ')
       end
-    elseif format == "ppm" then
-      image.set_source("data:" .. PPM_MIME .. ";base64," ..
-        buffer.tostring(Base64.encode(
-        buffer.fromstring(self:to_ppm()))))
+    end
+    table.insert(ascii_art, table.concat(line))
+  end
+
+  return table.concat(ascii_art, '\n')
+end
+
+function Canvas:render_0(el, format: string?, scale: number?)
+  format = format or "png"
+  if el ~= nil then
+    if el.set_source ~= nil then
+      if format == "png" then
+        local png = self:to_png()
+        if png ~= nil then
+          el.set_source("data:" .. PNG_MIME .. ";base64," ..
+            buffer.tostring(Base64.encode(
+            buffer.fromstring(table.concat(png.output)))))
+        end
+      elseif format == "ppm" then
+        el.set_source("data:" .. PPM_MIME .. ";base64," ..
+          buffer.tostring(Base64.encode(
+          buffer.fromstring(self:to_ppm()))))
+      end
+    end
+
+    if el.set_content ~= nil then
+      if format == "text" then
+        el.set_content(self:to_text(scale))
+      end
     end
   end
 end
 
-function Canvas:render(image, format: string?)
-  self:render_0(image, format)
+function Canvas:render(image, format: string?, scale: number?)
+  self:render_0(image, format, scale)
 end
 
 function Canvas:width() return self._width end

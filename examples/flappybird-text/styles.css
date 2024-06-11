@@ -1,0 +1,28 @@
+jumpbtn {
+  padding: 5px 86px;
+}
+
+restartbtn {
+  padding: 5px 81px;
+}
+
+buttons {
+  direction: column;
+  gap: 5px;
+  align-items: center;
+}
+
+fps {
+  font-size: 13px;
+}
+
+content {
+  direction: column;
+  gap: 6px;
+  align-items: center;
+}
+
+image {
+  font-size: 10px;
+  font-family: 'Courier New';
+}

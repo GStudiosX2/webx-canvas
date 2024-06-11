@@ -61,6 +61,11 @@ function SplitCanvas:to_png()
   return nil
 end
 
+function SplitCanvas:to_text()
+  error("Not Implemented")
+  return ""
+end
+
 function SplitCanvas:render(images, format: string?)
   format = format or "png"
   if #images < self._images_needed then 
